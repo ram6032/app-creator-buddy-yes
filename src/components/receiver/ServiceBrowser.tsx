@@ -24,6 +24,7 @@ export function ServiceBrowser({ services, user }: ServiceBrowserProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
+  const [minDays, setMinDays] = useState("");
   const { toast } = useToast();
 
   const filteredServices = services.filter(service => {
@@ -31,8 +32,9 @@ export function ServiceBrowser({ services, user }: ServiceBrowserProps) {
     const priceMatch = !maxPrice || service.price <= parseFloat(maxPrice);
     const locationMatch = !searchLocation || 
       service.providerLocation.toLowerCase().includes(searchLocation.toLowerCase());
+    const daysMatch = !minDays || service.duration >= parseInt(minDays);
     
-    return categoryMatch && priceMatch && locationMatch && service.status === "active";
+    return categoryMatch && priceMatch && locationMatch && daysMatch && service.status === "active";
   });
 
   const handleBookService = (service: any) => {
@@ -56,7 +58,7 @@ export function ServiceBrowser({ services, user }: ServiceBrowserProps) {
           <CardDescription>Filter services based on your requirements</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Category</label>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
@@ -80,6 +82,16 @@ export function ServiceBrowser({ services, user }: ServiceBrowserProps) {
                 placeholder="Enter max budget"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Min Days Available</label>
+              <Input
+                type="number"
+                placeholder="Minimum days needed"
+                value={minDays}
+                onChange={(e) => setMinDays(e.target.value)}
               />
             </div>
 
